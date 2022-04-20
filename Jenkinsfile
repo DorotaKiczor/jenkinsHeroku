@@ -1,24 +1,23 @@
 pipeline{
-agent any
-tools{
-maven "M3"
-}
-stages{
-stage('Build'){
-steps{
-    git 'https://github.com/DorotaKiczor/jenkinsHeroku.git'
-
-    sh "mvn -Dmaven.test.failure.ignore=true clean package"
-
-}
-
-post{
-    success{
-    junit '**/target/surefire-reports/TEST-*.xml'
-    archiveArtifacts 'target/*.jar'
+    agent any
+    tools{
+        maven "M3"
     }
-}
-
-}
-}
+    stages{
+        stage('Build'){
+            steps{
+                  sh "mvn clean compile"
+             }
+        }
+        stage('Test'){
+            steps{
+                sh "mvn test"
+            }
+        }
+        stage('Deploy'){
+            steps{
+                sh "mvn heroku:deploy"
+            }
+        }
+    }
 }
